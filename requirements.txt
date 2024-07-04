@@ -4,3 +4,4 @@ streamlit-metrics
 plotly
 cufflinks
 nltk
+matplotlib
