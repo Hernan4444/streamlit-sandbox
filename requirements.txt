@@ -5,3 +5,4 @@ plotly
 cufflinks
 nltk
 matplotlib
+streamlit-folium
