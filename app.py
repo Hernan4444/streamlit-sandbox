@@ -6,7 +6,8 @@ from streamlit_ace import st_ace
 import pandas as pd
 import numpy as np
 import altair as alt
-import cufflinks as cf
+import nltk
+nltk.download('stopwords')
 
 
 st.set_page_config(
@@ -18,7 +19,7 @@ st.set_page_config(
 st.sidebar.title(":memo: Editor settings")
 
 st.title("Streamlit sandbox")
-st.write("Play with Streamlit live in the browser!")
+st.write("Prueba tus códigos de Streamlit desde el navegador sin instalar nada")
 
 THEMES = [
     "ambiance",
@@ -66,8 +67,27 @@ KEYBINDINGS = ["emacs", "sublime", "vim", "vscode"]
 editor, app = st.tabs(["Editor", "App"])
 
 INITIAL_CODE = """
-table_data = {'Column 1': [1, 2], 'Column 2': [3, 4]}
-st.write(pd.DataFrame(data=table_data))
+import streamlit as st
+import altair as alt
+import numpy as np
+import pandas as pd
+
+x = st.slider('Selecciona cantidad de datos a crear', min_value=2, max_value=40)
+st.write('Datos a crear: ', x)
+
+chart_data = pd.DataFrame(
+    np.random.randn(x+1, 3),
+    columns=['a', 'b', 'c'])
+
+c = alt.Chart(chart_data).mark_circle().encode(
+    x='a',
+    y='b',
+    size='c',
+    color='c',
+    tooltip=['a', 'b', 'c']
+)
+
+st.altair_chart(c, use_container_width=True)
 """
 
 with editor:
@@ -80,7 +100,7 @@ with editor:
             "Keybinding mode", options=KEYBINDINGS, index=3
         ),
         font_size=st.sidebar.slider("Font size", 5, 24, 14),
-        tab_size=st.sidebar.slider("Tab size", 1, 8, 4),
+        tab_size=4,
         wrap=st.sidebar.checkbox("Wrap lines", value=False),
         show_gutter=True,
         show_print_margin=True,
@@ -88,24 +108,28 @@ with editor:
         readonly=False,
         key="ace-editor",
     )
-    st.write("Hit `CTRL+ENTER` to refresh")
-    st.write("*Remember to save your code separately!*")
+    st.write("Preciona `CTRL+ENTER` para refrescar")
+    st.write("*Recuerda guardar tu code en otra parte!*")
 
 with app:
     exec(code)
 
 with st.sidebar:
-    libraries_available = st.expander("Available Libraries")
+    libraries_available = st.expander("Librerías instaladas")
     with libraries_available:
         st.write(
             """
-        * Pandas (pd)
-        * Numpy (np)
-        * Altair (alt)
-        * Bokeh
-        * Plotly
-        * Cufflinks (cf)
-
-        [Need something else?](https://github.com/samdobson/streamlit-sandbox/issues/new)
+        * Pandas
+        * Altair
+        * nltk
+        """
+        )
+    dataset_available = st.expander("Datasets disponibles")
+    with dataset_available:
+        st.write(
+            """
+        * McDonald_s_Reviews.csv 
+        * Bicycle_Chicago.csv
+        * Airbnb_Locations.csv
         """
         )
