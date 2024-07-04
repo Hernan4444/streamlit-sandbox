@@ -88,6 +88,10 @@ c = alt.Chart(chart_data).mark_circle().encode(
 )
 
 st.altair_chart(c, use_container_width=True)
+
+st.write("Cargando dataset")
+mc_df = pd.read_csv('McDonald_s_Reviews.csv', encoding="latin-1")
+st.write(mc_df.head(10))
 """
 
 with editor:
